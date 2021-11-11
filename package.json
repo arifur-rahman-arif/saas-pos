@@ -4,8 +4,9 @@
     "description": "This is a SaaS software architecture template, that can be used to develop any saas product",
     "main": "index.js",
     "scripts": {
-        "start": "node server.js",
-        "dev": "nodemon server.js"
+        "start": "node server.js production",
+        "dev": "nodemon server.js development",
+        "create-route": "node ./bin/commands/createRoute.js"
     },
     "keywords": [
         "sass",
@@ -22,6 +23,8 @@
         "express": "^4.17.1"
     },
     "devDependencies": {
-        "nodemon": "^2.0.15"
+        "chalk": "^4.1.2",
+        "nodemon": "^2.0.15",
+        "prompts": "^2.4.2"
     }
 }

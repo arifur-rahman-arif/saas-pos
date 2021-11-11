@@ -26,5 +26,11 @@ fs.readdir("./routes", (err, routes) => {
 
 // Run the app on the server port
 app.listen(PORT, () => {
-    console.log(`Server running at ${PORT}`);
+    let processArgs = process.argv.slice(2);
+
+    if (processArgs.includes("development")) {
+        console.log(`Server running at http://localhost:${PORT}/api/`);
+    } else {
+        console.log(`Server running at ${PORT}`);
+    }
 });

@@ -17,13 +17,18 @@ app.use(cors());
 fs.readdir("./routes", (err, routes) => {
     if (err) return console.trace(err);
 
-    if (!routes) return console.trace("No api file found.");
+    if (!routes.length) {
+        app.use(error.routeError);
+        return console.trace("No api file found.");
+    }
 
-    routes.forEach((api) => {
+    routes.forEach((api, i, arr) => {
         if (path.parse(api).ext === ".js") {
             app.use("/api", require(`./routes/${api}`));
         }
-        app.use(error.routeError);
+        if (i === arr.length - 1) {
+            app.use(error.routeError);
+        }
     });
 });
 

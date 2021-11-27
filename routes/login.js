@@ -7,7 +7,7 @@ const route = path.parse(path.basename(__filename)).name;
 
 router.get(`/${route}`, (req, res) => {
     console.log(chalk.yellowBright.italic.bold(`Request for /api/${route}`));
-    res.status(200).send({
+    res.status(201).send({
         response: `Response from /api/${route}`,
     });
 });

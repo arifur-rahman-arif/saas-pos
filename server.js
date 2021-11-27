@@ -6,7 +6,9 @@ const app = express();
 const cors = require("cors");
 const fs = require("fs");
 const path = require("path");
+const error = require("./middleware/error");
 
+("use strict");
 // Use all the middlewares here
 app.use(express.json());
 app.use(cors());
@@ -21,6 +23,7 @@ fs.readdir("./routes", (err, routes) => {
         if (path.parse(api).ext === ".js") {
             app.use("/api", require(`./routes/${api}`));
         }
+        app.use(error.routeError);
     });
 });
 

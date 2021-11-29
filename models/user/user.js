@@ -5,7 +5,7 @@ const userSchema = mongoose.Schema(
         userName: {
             type: String,
             required: true,
-            unique: true,
+            // unique: true,
         },
         fullName: {
             type: String,
@@ -14,21 +14,18 @@ const userSchema = mongoose.Schema(
         email: {
             type: String,
             required: true,
-            unique: true,
+            // unique: true,
         },
-        password: {
-            type: String,
-            required: true,
-        },
-        phone: {
-            type: String,
-        },
-        address: {
-            type: String,
-        },
-        avatarRef: {
-            type: String,
-        },
+        // password: {
+        //     type: String,
+        //     required: true,
+        // },
+        // phone: {
+        //     type: String,
+        // },
+        // avatarRef: {
+        //     type: String,
+        // },
     },
     {
         timestamps: true,

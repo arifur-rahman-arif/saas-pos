@@ -2,48 +2,38 @@ const express = require("express");
 const router = express.Router();
 const path = require("path");
 const chalk = require("chalk");
-const User = require("../models/user/user");
+const { Transient, transientSchema } = require("../models/transient");
 
 const route = path.parse(path.basename(__filename)).name;
 
 router.get(`/${route}`, async (req, res) => {
     console.log(chalk.yellowBright.italic.bold(`Request for /api/${route}`));
 
-    // const user = User({
-    //     userName: "AR Arifasdfa",
-    //     fullName: "lasdfjl",
-    //     email: "dev.ar.arif@gmail.com",
-    //     password: "helaofsd",
-    // });
+    try {
+        const transient = new Transient({
+            name: "testing",
+            value: [1, 2],
+        });
 
-    // User.find(function (err, data) {
-    //     if (err) {
-    //         console.log(err);
-    //     } else {
-    //         res.status(200).send({
-    //             status: 200,
-    //             response: data,
-    //         });
-    //     }
-    // });
+        transientSchema.index({ createdAt: 1 }, { expireAfterSeconds: 60 });
 
-    let data = await User.find().select(["fullName"]);
+        let data = await transient.save();
+
+        console.log(data);
+        console.log("transiednt saved");
+    } catch (error) {
+        console.log(error);
+
+        return res.status(200).send({
+            status: 500,
+            response: error.message,
+        });
+    }
 
     res.status(200).send({
         status: 200,
-        response: data,
+        response: `Response from /api/${route}`,
     });
-
-    // user.save((err) => {
-    //     if (err) return console.trace(err);
-
-    //     console.log("data inserted");
-    // });
-
-    // res.status(200).send({
-    //     status: 200,
-    //     response: `Response from /api/${route}`,
-    // });
 });
 
 module.exports = router;

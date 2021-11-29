@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const userMetaSchema = mongoose.Schema(
     {
         userID: {
-            type: String,
+            type: mongoose.ObjectId,
             required: true,
             unique: true,
         },

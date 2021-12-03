@@ -1,0 +1,10 @@
+POST http://localhost:4000/api/auth/register
+content-type: application/json
+
+{
+	"userName": "ar-arif",
+	"firstName": "AR",
+	"lastName": "Arif",
+	"password": "123456",
+	"email": "dev.ar.arif@gmail.com"
+}

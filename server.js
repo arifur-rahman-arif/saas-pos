@@ -30,6 +30,9 @@ if (routes.length) {
 // IF there is no route specified than return error response
 app.use(error.routeError);
 
+// Handle errors for all rounte
+app.use(error.errorHandler);
+
 // Run the app on the server port
 app.listen(PORT, () => {
     let processArgs = process.argv.slice(2);
@@ -39,4 +42,9 @@ app.listen(PORT, () => {
     } else {
         console.log(`Server running at ${PORT}`);
     }
+});
+
+process.on("unhandledRejection", (err, promise) => {
+    console.log(`Logged Error: ${err.message}`);
+    server.close(() => process.exit(1));
 });

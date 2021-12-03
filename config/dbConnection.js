@@ -5,7 +5,10 @@ mongoose.connect(process.env.MONGODB_URL);
 
 const db = mongoose.connection;
 
-db.on("error", console.error.bind(console, "connection error:"));
+db.on("error", (err) => {
+    console.log(chalk.yellowBright.italic.bold(err.message));
+    process.exit(1);
+});
 db.once("open", () => {
-    console.log(chalk.yellowBright.italic.bold(`Database connected: ${process.env.MONGODB_URL}`));
+    console.log(chalk.yellowBright.italic.bold(`Database connected`));
 });

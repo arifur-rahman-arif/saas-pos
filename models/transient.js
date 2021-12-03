@@ -15,7 +15,12 @@ const transientSchema = mongoose.Schema(
     }
 );
 
-const Transient = mongoose.model("transient", transientSchema);
+const transientModal = (expirationTime = 86400) => {
+    const Transient = mongoose.model("transient", transientSchema);
 
-module.exports = { Transient, transientSchema };
-// module.exports = Transient;
+    transientSchema.index({ createdAt: 1 }, { expireAfterSeconds: expirationTime });
+
+    return Transient;
+};
+
+module.exports = transientModal;

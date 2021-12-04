@@ -1,5 +1,6 @@
-const ErrorResponse = require("../bin/utils/ErrorResponse");
+const ErrorResponse = require("../utils/ErrorResponse");
 const User = require("../models/user/user");
+const sendMail = require("../utils/emails/sendMail");
 
 const registerController = {
     user: null,
@@ -12,7 +13,7 @@ const registerController = {
                 if (err) {
                     return next(new ErrorResponse(err, 400));
                 } else {
-                    registerController.sendToken(req, res, next);
+                    registerController.sendResponse(req, res, next);
                 }
             });
         } catch (error) {
@@ -20,16 +21,40 @@ const registerController = {
         }
     },
 
-    sendToken: (req, res, next) => {
-        if (!registerController.user) return next(new ErrorResponse("User don't exists", 404));
-        const token = registerController.user.getSignedJwtToken();
+    sendResponse: async (req, res, next) => {
+        const { email } = req.body;
 
-        res.status(201).json({
-            code: 201,
-            status: "success",
-            token,
-            response: "User created successfully",
-        });
+        if (!registerController.user) return next(new ErrorResponse("User don't exists", 404));
+
+        try {
+            const token = registerController.user.getSignedJwtToken();
+
+            let url = `${req.protocol}://${req.get("host")}${req.originalUrl}/${token}`;
+
+            let message = `
+                Click <a href="${url}">here</a> to verify your account or open this url to your browser
+                ${url}
+            `;
+
+            let mail = await sendMail({
+                toEmail: email,
+                subject: "Account Verification",
+                message,
+            });
+
+            if (mail) {
+                res.status(202).json({
+                    code: 202,
+                    status: "success",
+                    token,
+                    response: "User created successfully",
+                });
+            } else {
+                return next(new ErrorResponse("Mail could not be sent", 400));
+            }
+        } catch (error) {
+            next(error);
+        }
     },
 };
 

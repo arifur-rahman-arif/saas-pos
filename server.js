@@ -34,7 +34,7 @@ app.use(error.routeError);
 app.use(error.errorHandler);
 
 // Run the app on the server port
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
     let processArgs = process.argv.slice(2);
 
     if (processArgs.includes("development")) {

@@ -1,7 +1,8 @@
 const mongoose = require("mongoose");
-const crypto = require("crypto-js");
+const crypto = require("crypto");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const userRoles = require("../../utils/userRoles");
 
 const userSchema = mongoose.Schema(
     {
@@ -45,6 +46,11 @@ const userSchema = mongoose.Schema(
             minlength: 6,
             select: false,
         },
+        userRole: {
+            type: String,
+            required: [true, "Please provide user role"],
+            default: userRoles.subscriber.slug,
+        },
         avatarRef: {
             type: String,
         },
@@ -64,8 +70,8 @@ const userSchema = mongoose.Schema(
             },
             default: {
                 active: false,
-                onHold: false,
-                restricted: false,
+                onHold: true,
+                restricted: true,
                 isVerified: false,
             },
         },
@@ -91,7 +97,7 @@ userSchema.methods.matchPassword = async function (password) {
 
 userSchema.methods.getSignedJwtToken = function () {
     return jwt.sign({ id: this._id }, process.env.JWT_SECRET, {
-        expiresIn: "30d",
+        expiresIn: "1d",
     });
 };
 

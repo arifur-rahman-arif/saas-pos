@@ -6,5 +6,5 @@ content-type: application/json
 	"firstName": "AR",
 	"lastName": "Arif",
 	"password": "123456",
-	"email": "dev.ar.arif@gmail.com"
+	"email": "kosotene@ryteto.me"
 }

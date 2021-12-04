@@ -1,5 +1,5 @@
-const ErrorResponse = require("../bin/utils/ErrorResponse");
 const User = require("../models/user/user");
+const ErrorResponse = require("../utils/ErrorResponse");
 
 const authMiddleware = {
     isUserExists: async (req, res, next) => {

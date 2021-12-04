@@ -1,4 +1,4 @@
-const ErrorResponse = require("../bin/utils/ErrorResponse");
+const ErrorResponse = require("../utils/ErrorResponse");
 
 const error = {
     routeError: (req, res, next) => {

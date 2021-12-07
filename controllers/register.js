@@ -27,7 +27,7 @@ const registerController = {
         if (!registerController.user) return next(new ErrorResponse("User don't exists", 404));
 
         try {
-            const token = registerController.user.getSignedJwtToken();
+            const token = registerController.user.getSignedJwtToken("1d");
 
             let url = `${req.protocol}://${req.get("host")}${req.originalUrl}/${token}`;
 
@@ -43,7 +43,7 @@ const registerController = {
             });
 
             if (mail) {
-                res.status(202).json({
+                return res.status(202).json({
                     code: 202,
                     status: "success",
                     token,

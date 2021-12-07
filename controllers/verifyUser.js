@@ -14,10 +14,16 @@ const verifyUserController = {
 
             jwt.verify(authToken, process.env.JWT_SECRET, async (err, token) => {
                 if (err) {
-                    return next(new ErrorResponse("Auth Token is not valid", 401));
+                    return next(new ErrorResponse("Auth Token is not valid or it is expired", 401));
                 }
 
                 let userID = token.id;
+
+                let doc = await User.findById(userID);
+
+                if (doc.status.isVerified) {
+                    return next(new ErrorResponse("User is already verified", 401));
+                }
 
                 let userDoc = await User.findByIdAndUpdate(userID, {
                     status: {

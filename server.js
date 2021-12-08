@@ -6,6 +6,8 @@ const app = express();
 const cors = require("cors");
 const fs = require("fs");
 const path = require("path");
+const cookieParser = require("cookie-parser");
+
 const error = require("./middleware/error");
 
 require("./config/dbConnection");
@@ -14,6 +16,7 @@ require("./config/dbConnection");
 // Use all the middlewares here
 app.use(express.json());
 app.use(cors());
+app.use(cookieParser(process.env.COOKIE_SECRET));
 
 // Require all routes files here. these are going to be use as an /api route for this application
 let routes = fs.readdirSync("./routes");

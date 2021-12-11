@@ -39,15 +39,14 @@ const loginController = {
             let token = userDoc.getSignedJwtToken("3d");
 
             if (token) {
-                res.cookie("_id", token, {
+                res.cookie("authToken", token, {
                     signed: true,
-                    expires: new Date(Date.now() + 60 * 60 * 24 * 3 * 1000),
+                    expires: new Date(Date.now() + 60 * 60 * 24 * 10 * 1000),
                 });
 
                 return res.status(200).json({
                     code: 200,
                     status: "success",
-                    token,
                     response: "User logged in successfully",
                 });
             }

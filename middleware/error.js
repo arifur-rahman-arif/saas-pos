@@ -23,8 +23,6 @@ const error = {
             error = new ErrorResponse(message, 400);
         }
 
-        console.log(err);
-
         res.status(error.statusCode || 500).json({
             code: error.statusCode,
             status: "error",

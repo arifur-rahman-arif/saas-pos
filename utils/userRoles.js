@@ -3,9 +3,13 @@ const userRoles = {
         slug: "admin",
         name: "Administrator",
     },
-    subscriber: {
-        slug: "subscriber",
-        name: "Subscriber",
+    shopAdmin: {
+        slug: "shopAdmin",
+        name: "Shop Owner",
+    },
+    shopManager: {
+        slug: "shopManager",
+        name: "Shop Manager",
     },
 };
 

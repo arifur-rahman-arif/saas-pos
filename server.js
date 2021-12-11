@@ -13,6 +13,10 @@ const error = require("./middleware/error");
 require("./config/dbConnection");
 
 ("use strict");
+
+// Define the app server environment
+app.set("env", "development");
+
 // Use all the middlewares here
 app.use(express.json());
 app.use(cors());

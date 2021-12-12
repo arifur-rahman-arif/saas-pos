@@ -7,9 +7,9 @@ const userRoles = {
         slug: "shopAdmin",
         name: "Shop Owner",
     },
-    shopManager: {
-        slug: "shopManager",
-        name: "Shop Manager",
+    shopCashier: {
+        slug: "shopCashier",
+        name: "Shop Cashier",
     },
 };
 

@@ -1,6 +1,7 @@
 const User = require("../models/user/user");
 const ErrorResponse = require("../utils/ErrorResponse");
 const jwt = require("jsonwebtoken");
+const Session = require("../models/user/session");
 
 const authMiddleware = {
     isUserExists: async (req, res, next) => {
@@ -16,20 +17,43 @@ const authMiddleware = {
         next();
     },
 
-    verifyCookieToken: (req, res, next) => {
-        let authToken = "";
+    hasCapabitlities: async (req, res, next) => {
+        const { userName, email } = req.body;
 
-        if (!req.signedCookies?.authToken) {
-            return next(new ErrorResponse("Token is not found", 400));
+        if (!userName || !email) {
+            return next(new ErrorResponse("Username and email is required", 400));
         }
 
-        authToken = req.signedCookies?.authToken;
+        const userDoc = await User.findOne({
+            userName,
+            email,
+        });
 
-        if (!authToken) {
-            return next(new ErrorResponse("Not authorized to access this route", 401));
+        if (!userDoc.status.active || !userDoc.status.isVerified) {
+            return next(new ErrorResponse("User account is not verifed or in-active", 401));
         }
 
+        // if (userDoc.userRole !== "admin" || userDoc.userRole !== "shopAdmin") {
+        //     return next(new ErrorResponse("Forbidden to remove session", 403));
+        // }
+
+        next();
+    },
+
+    verifyReqToken: async (req, res, next) => {
         try {
+            let authToken = "";
+
+            if (!req.signedCookies?.authToken) {
+                return next(new ErrorResponse("Token is not found", 400));
+            }
+
+            authToken = req.signedCookies?.authToken;
+
+            if (!authToken) {
+                return next(new ErrorResponse("Not authorized to access this route", 401));
+            }
+
             jwt.verify(authToken, process.env.JWT_SECRET, async (err, token) => {
                 if (err) {
                     return next(new ErrorResponse("Auth Token is not valid or it is expired", 401));
@@ -41,16 +65,24 @@ const authMiddleware = {
 
                 if (!userDoc.status.isVerified) {
                     return next(new ErrorResponse("User is not verified", 401));
-                } else {
+                }
+
+                const sessionDoc = await Session.find({
+                    userID: userDoc._id,
+                });
+
+                if (sessionDoc.length > 0) {
                     return res.status(201).json({
                         code: 200,
                         status: "success",
-                        response: "Token verified successfully",
+                        response: "Session verified successfully",
                     });
+                } else {
+                    return next(new ErrorResponse("User session is not found", 404));
                 }
             });
         } catch (err) {
-            return next(new ErrorResponse("Not authorized to access this route", 401));
+            next(err);
         }
     },
 
@@ -86,7 +118,7 @@ const authMiddleware = {
                 }
             });
         } catch (err) {
-            return next(new ErrorResponse("Not authorized to access this route", 401));
+            next(err);
         }
     },
 };

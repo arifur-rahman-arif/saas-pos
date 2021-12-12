@@ -1,7 +1,7 @@
 const chalk = require("chalk");
 const mongoose = require("mongoose");
 
-mongoose.connect(process.env.MONGODB_URL);
+mongoose.connect(process.env.MONGODB_URI);
 
 const db = mongoose.connection;
 

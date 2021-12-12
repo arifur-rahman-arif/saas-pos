@@ -49,7 +49,7 @@ const userSchema = mongoose.Schema(
         userRole: {
             type: String,
             required: [true, "Please provide user role"],
-            default: userRoles.subscriber.slug,
+            default: userRoles.shopAdmin.slug,
         },
         avatarRef: {
             type: String,

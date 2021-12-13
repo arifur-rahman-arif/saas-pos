@@ -29,7 +29,7 @@ POST http://localhost:4000/api/auth/logoutUser
 content-type: application/json
 
 {
-	"userID": "61b0a82ad0c1d0da57e0ee03",
+	"userID": "61b6130a95fd0addf118dba7",
 	"userName": "ar-arif",
 	"email": "kosotene@ryteto.me"
 }

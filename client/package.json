@@ -2,6 +2,7 @@
     "name": "client",
     "version": "0.1.0",
     "private": true,
+    "proxy": "http://localhost:4000/api/",
     "dependencies": {
         "@emotion/react": "^11.7.1",
         "@mui/material": "^5.2.3",

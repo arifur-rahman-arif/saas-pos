@@ -75,7 +75,7 @@ const authMiddleware = {
                     return res.status(201).json({
                         code: 200,
                         status: "success",
-                        response: "Session verified successfully",
+                        message: "Session verified successfully",
                     });
                 } else {
                     return next(new ErrorResponse("User session is not found", 404));
@@ -113,7 +113,7 @@ const authMiddleware = {
                     return res.status(201).json({
                         code: 200,
                         status: "success",
-                        response: "Token verified successfully",
+                        message: "Token verified successfully",
                     });
                 }
             });

@@ -4,6 +4,7 @@ const ErrorResponse = require("../utils/ErrorResponse");
 
 const loginController = {
     login: async (req, res, next) => {
+        console.log("hello");
         try {
             const { userName, email, password } = req.body;
 
@@ -60,28 +61,11 @@ const loginController = {
                 return res.status(200).json({
                     code: 200,
                     status: "success",
-                    response: "User logged in successfully",
+                    message: "User logged in successfully",
                 });
             }
 
             return next(new ErrorResponse("One or more field is empty", 404));
-
-            // if (!userDoc.status.active || !userDoc.status.isVerified) {
-            //     return next(new ErrorResponse("User account is not verifed or in-active", 401));
-            // }
-
-            // const userID = userDoc.id.toString();
-
-            // const expirationTime = new Date(Date.now() + 60 * 60 * 24 * 10 * 1000);
-
-            // req.session.userID = userID;
-            // req.session.cookie.expires = expirationTime;
-
-            // return res.status(200).json({
-            //     code: 200,
-            //     status: "success",
-            //     response: "User logged in successfully",
-            // });
         } catch (error) {
             next(error);
         }

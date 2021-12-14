@@ -75,7 +75,7 @@ const verifyUserController = {
                     code: 201,
                     status: "success",
                     token,
-                    response: "User created successfully",
+                    message: "User created successfully",
                 });
             } else {
                 return next(new ErrorResponse("Mail could not be sent", 400));

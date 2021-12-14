@@ -5,7 +5,7 @@ const error = {
         res.status(404).send({
             code: 404,
             status: "error",
-            error: `Api route not found for ${req.headers.host + req.url}`,
+            message: `Api route not found for ${req.headers.host + req.url}`,
         });
     },
     errorHandler: (err, req, res, next) => {
@@ -26,7 +26,7 @@ const error = {
         res.status(error.statusCode || 500).json({
             code: error.statusCode,
             status: "error",
-            error: error.message || "Server Error",
+            message: error.message || "Server Error",
         });
     },
 };

@@ -19,7 +19,7 @@ const logoutUserController = {
                 return res.status(200).json({
                     code: 200,
                     status: "success",
-                    response: "User session removed successfully",
+                    message: "User session removed successfully",
                 });
             } else {
                 return next(new ErrorResponse("No user session found to delete", 404));

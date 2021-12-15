@@ -4,9 +4,8 @@ const ErrorResponse = require("../utils/ErrorResponse");
 
 const loginController = {
     login: async (req, res, next) => {
-        console.log("hello");
         try {
-            const { userName, email, password } = req.body;
+            const { userName, email, password, keepMeLoggedIn } = req.body;
 
             if (!password) {
                 return next(new ErrorResponse("Password is required", 404));
@@ -18,11 +17,11 @@ const loginController = {
 
             let data;
 
-            if (userName.length > 0) {
+            if (userName?.length > 0) {
                 data = {
                     userName,
                 };
-            } else if (email.length > 0) {
+            } else if (email?.length > 0) {
                 data = {
                     email,
                 };
@@ -32,7 +31,7 @@ const loginController = {
 
             const userDoc = await User.findOne(data).select(["password", "status"]);
 
-            if (!userDoc) next(new ErrorResponse("User don't exists", 404));
+            if (!userDoc) return next(new ErrorResponse("User don't exists", 404));
 
             let isPasswordMatch = await userDoc.matchPassword(password);
 
@@ -47,16 +46,24 @@ const loginController = {
             const expirationTime = new Date(Date.now() + 60 * 60 * 24 * 10 * 1000);
 
             if (token) {
-                res.cookie("authToken", token, {
+                let cookieObject = {
                     signed: true,
-                    expires: expirationTime,
-                });
+                    secure: true,
+                };
 
-                const sessionModal = new Session({
-                    userID: userDoc._id,
-                });
+                if (keepMeLoggedIn) {
+                    cookieObject.expires = expirationTime;
+                }
 
-                sessionModal.save();
+                res.cookie("authToken", token, cookieObject);
+
+                if (keepMeLoggedIn) {
+                    const sessionModal = new Session({
+                        userID: userDoc._id,
+                    });
+
+                    sessionModal.save();
+                }
 
                 return res.status(200).json({
                     code: 200,

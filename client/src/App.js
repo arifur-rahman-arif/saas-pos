@@ -3,8 +3,8 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 import "./App.scss";
 import RequireAuth from "./routes/RequireAuth";
+import Auth from "./screens/Auth";
 import Dashboard from "./screens/Dashboard";
-import Login from "./screens/Login";
 import NotFound from "./screens/NotFound";
 
 const App = () => {
@@ -12,7 +12,7 @@ const App = () => {
         <>
             <Router>
                 <Routes>
-                    <Route path="/" element={<Login />} />
+                    <Route path="/" element={<Auth />} />
                     <Route
                         path="/dashboard"
                         element={

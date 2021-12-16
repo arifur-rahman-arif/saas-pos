@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { Navigate } from "react-router";
 import { Link as RouterLink } from "react-router-dom";
 
-import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import LoadingButton from "@mui/lab/LoadingButton";
 import FormControlLabel from "@mui/material/FormControlLabel";
@@ -12,6 +11,7 @@ import Link from "@mui/material/Link";
 import { useLoginMutation } from "../../services/auth";
 import { useDispatch } from "react-redux";
 import { handleAlert } from "../../features/alert/alertSlice";
+import { validateEmail } from "../../global";
 
 const Login = () => {
     // Login form state
@@ -62,6 +62,17 @@ const Login = () => {
         };
 
         if (userLogin.match(/([a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z0-9_-]+)/gi)) {
+            if (!validateEmail(userLogin)) {
+                dispatch(
+                    handleAlert({
+                        showAlert: true,
+                        alertType: "warning",
+                        alertMessage: "Please provide a valid email address",
+                    })
+                );
+                return;
+            }
+
             reqBody.email = userLogin;
         } else {
             reqBody.userName = userLogin;
@@ -78,12 +89,12 @@ const Login = () => {
                 <label className="label" htmlFor="chk" aria-hidden="true">
                     Login
                 </label>
-                <Box
+                <form
                     onSubmit={loginSubmit}
                     component="form"
                     className="login_form"
                     noValidate
-                    autoComplete="off"
+                    autoComplete="on"
                 >
                     <TextField
                         style={{ zIndex: "0" }}
@@ -126,7 +137,12 @@ const Login = () => {
                             label="Keep me logged in"
                         />
 
-                        <Link href="#" underline="hover" component={RouterLink} to="/dashboard">
+                        <Link
+                            href="#"
+                            underline="hover"
+                            component={RouterLink}
+                            to="/forgot-password"
+                        >
                             Forgot password
                         </Link>
                     </div>
@@ -139,7 +155,7 @@ const Login = () => {
                     >
                         Login
                     </LoadingButton>
-                </Box>
+                </form>
             </div>
         </>
     );

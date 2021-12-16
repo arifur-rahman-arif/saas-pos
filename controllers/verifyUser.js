@@ -38,7 +38,7 @@ const verifyUserController = {
                     return res.status(201).json({
                         code: 201,
                         status: "success",
-                        response: "User verified successfully",
+                        message: "User verified successfully",
                     });
                 } else {
                     return next(new ErrorResponse("User is not found to validate", 404));

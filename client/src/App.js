@@ -5,7 +5,9 @@ import "./App.scss";
 import RequireAuth from "./routes/RequireAuth";
 import Auth from "./screens/Auth";
 import Dashboard from "./screens/Dashboard";
+import ForgotPassword from "./screens/forgot-password/ForgotPassword";
 import NotFound from "./screens/NotFound";
+import ResetPassword from "./screens/reset-password/ResetPassword";
 
 const App = () => {
     return (
@@ -21,6 +23,8 @@ const App = () => {
                             </RequireAuth>
                         }
                     />
+                    <Route path="/forgot-password" element={<ForgotPassword />} />
+                    <Route path="/reset-password/:token" element={<ResetPassword />} />
                     <Route path="*" element={<NotFound />} />
                 </Routes>
             </Router>

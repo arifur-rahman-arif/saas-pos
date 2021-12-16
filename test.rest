@@ -33,3 +33,12 @@ content-type: application/json
 	"userName": "ar-arif",
 	"email": "kosotene@ryteto.me"
 }
+###
+
+
+POST http://localhost:4000/api/auth/forgot-password
+content-type: application/json
+
+{
+	"email": "kosotene@ryteto.me"
+}

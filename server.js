@@ -14,8 +14,12 @@ require("./config/dbConnection");
 
 ("use strict");
 
+let processArgs = process.argv.slice(2);
+
+global.environment = processArgs.includes("development") ? "development" : "production";
+
 // Define the app server environment
-app.set("env", "development");
+app.set("env", environment);
 
 // Use all the middlewares here
 app.use(express.json());
@@ -42,9 +46,7 @@ app.use(error.errorHandler);
 
 // Run the app on the server port
 const server = app.listen(PORT, () => {
-    let processArgs = process.argv.slice(2);
-
-    if (processArgs.includes("development")) {
+    if (environment === "development") {
         console.log(`Server running at http://localhost:${PORT}/api/`);
     } else {
         console.log(`Server running at ${PORT}`);

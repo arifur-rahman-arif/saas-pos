@@ -33,9 +33,9 @@ const authMiddleware = {
             return next(new ErrorResponse("User account is not verifed or in-active", 401));
         }
 
-        // if (userDoc.userRole !== "admin" || userDoc.userRole !== "shopAdmin") {
-        //     return next(new ErrorResponse("Forbidden to remove session", 403));
-        // }
+        if (userDoc.userRole !== "admin" || userDoc.userRole !== "shopAdmin") {
+            return next(new ErrorResponse("Forbidden to remove session", 403));
+        }
 
         next();
     },

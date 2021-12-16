@@ -14,9 +14,18 @@ export const authApi = createApi({
                 };
             },
         }),
+        forgotPassword: builder.mutation({
+            query: (body) => {
+                return {
+                    url: `forgot-password`,
+                    method: "PATCH",
+                    body,
+                };
+            },
+        }),
     }),
 });
 
 // Export hooks for usage in functional components, which are
 // auto-generated based on the defined endpoints
-export const { useLoginMutation } = authApi;
+export const { useLoginMutation, useForgotPasswordMutation } = authApi;

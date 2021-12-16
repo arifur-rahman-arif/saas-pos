@@ -1,4 +1,3 @@
-const Session = require("../models/user/session");
 const User = require("../models/user/user");
 const ErrorResponse = require("../utils/ErrorResponse");
 
@@ -41,29 +40,14 @@ const loginController = {
                 return next(new ErrorResponse("User account is not verifed or in-active", 401));
             }
 
-            let token = userDoc.getSignedJwtToken("3d");
+            const expirationTime = 60 * 60 * 24 * 10 * 1000;
 
-            const expirationTime = new Date(Date.now() + 60 * 60 * 24 * 10 * 1000);
-
-            if (token) {
-                let cookieObject = {
-                    signed: true,
-                    secure: true,
-                };
-
+            if (userDoc?._id) {
                 if (keepMeLoggedIn) {
-                    cookieObject.expires = expirationTime;
+                    req.session.cookie.maxAge = expirationTime;
                 }
 
-                res.cookie("authToken", token, cookieObject);
-
-                if (keepMeLoggedIn) {
-                    const sessionModal = new Session({
-                        userID: userDoc._id,
-                    });
-
-                    sessionModal.save();
-                }
+                req.session.userID = userDoc._id;
 
                 return res.status(200).json({
                     code: 200,

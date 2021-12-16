@@ -48,7 +48,7 @@ const ResetPassword = () => {
                 handleAlert({
                     showAlert: true,
                     alertType: "info",
-                    alertMessage: "Your new password is week",
+                    alertMessage: "Your new password is weak",
                 })
             );
             return;

@@ -25,7 +25,7 @@ const Login = () => {
     const dispatch = useDispatch();
 
     // All ajax req here
-    const [loginFunction, { isError, isLoading, isSuccess, error }] = useLoginMutation();
+    const [loginCaller, { isError, isLoading, isSuccess, error }] = useLoginMutation();
 
     useEffect(() => {
         if (isError) {
@@ -37,7 +37,7 @@ const Login = () => {
                 })
             );
         }
-    }, [isError, isLoading, isSuccess, error, dispatch]);
+    }, [isError, error, dispatch]);
 
     const loginSubmit = (e) => {
         e.preventDefault();
@@ -78,7 +78,7 @@ const Login = () => {
             reqBody.userName = userLogin;
         }
 
-        loginFunction(reqBody);
+        loginCaller(reqBody);
     };
 
     return (

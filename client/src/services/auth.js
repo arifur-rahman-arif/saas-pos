@@ -18,7 +18,7 @@ export const authApi = createApi({
             query: (body) => {
                 return {
                     url: `forgot-password`,
-                    method: "PATCH",
+                    method: "POST",
                     body,
                 };
             },

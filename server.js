@@ -7,6 +7,8 @@ const cors = require("cors");
 const fs = require("fs");
 const path = require("path");
 const cookieParser = require("cookie-parser");
+const session = require("express-session");
+const MongoStore = require("connect-mongo");
 
 const error = require("./middleware/error");
 
@@ -25,6 +27,15 @@ app.set("env", environment);
 app.use(express.json());
 app.use(cors());
 app.use(cookieParser(process.env.COOKIE_SECRET));
+app.use(
+    session({
+        secret: process.env.SESSION_SECRET,
+        resave: false,
+        saveUninitialized: false,
+        cookie: { secure: environment === "development" ? false : true },
+        store: MongoStore.create({ mongoUrl: process.env.MONGODB_URI }),
+    })
+);
 
 // Require all routes files here. these are going to be use as an /api route for this application
 let routes = fs.readdirSync("./routes");

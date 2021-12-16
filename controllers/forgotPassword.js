@@ -45,7 +45,7 @@ const forgotPasswordController = {
                 return res.status(200).json({
                     code: 200,
                     status: "success",
-                    message: "Please check you mail to reset password",
+                    message: "Please check your mail to reset password",
                 });
             } else {
                 return next(new ErrorResponse("Mail could not be sent", 400));

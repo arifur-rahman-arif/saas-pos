@@ -14,7 +14,7 @@ const Alert = () => {
         <>
             <Snackbar
                 open={alertValue}
-                autoHideDuration={5000}
+                autoHideDuration={6000}
                 anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
                 onClose={() => dispatch(handleAlert({ showAlert: false }))}
             >

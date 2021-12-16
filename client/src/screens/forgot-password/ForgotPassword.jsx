@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import LoadingButton from "@mui/lab/LoadingButton";
 import TextField from "@mui/material/TextField";
 
@@ -6,12 +6,39 @@ import Alert from "../../features/alert/Alert";
 import { useDispatch } from "react-redux";
 import { handleAlert } from "../../features/alert/alertSlice";
 import { validateEmail } from "../../global";
+import { useForgotPasswordMutation } from "../../services/auth";
 
 const ForgotPassword = () => {
+    const [forgotPasswordCaller, { isError, isLoading, isSuccess, error, data }] =
+        useForgotPasswordMutation();
+
+    const dispatch = useDispatch();
+
     const [userEmail, setUserEmail] = useState("");
     const [emailInputError, setEmailInputError] = useState(false);
 
-    const dispatch = useDispatch();
+    useEffect(() => {
+        if (isError) {
+            dispatch(
+                handleAlert({
+                    showAlert: true,
+                    alertType: "error",
+                    alertMessage: error.data.message,
+                })
+            );
+        }
+        if (isSuccess) {
+            setUserEmail("");
+
+            dispatch(
+                handleAlert({
+                    showAlert: true,
+                    alertType: "success",
+                    alertMessage: data.message,
+                })
+            );
+        }
+    }, [isError, isSuccess, isLoading, error, data, dispatch]);
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -34,18 +61,11 @@ const ForgotPassword = () => {
             return;
         }
 
-        // const reqBody = {
-        //     password: userPassword,
-        //     keepMeLoggedIn,
-        // };
+        const reqBody = {
+            email: userEmail,
+        };
 
-        // if (userLogin.match(/([a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z0-9_-]+)/gi)) {
-        //     reqBody.email = userLogin;
-        // } else {
-        //     reqBody.userName = userLogin;
-        // }
-
-        // loginFunction(reqBody);
+        forgotPasswordCaller(reqBody);
     };
 
     return (
@@ -74,8 +94,8 @@ const ForgotPassword = () => {
 
                     <LoadingButton
                         type="submit"
-                        loading={false}
-                        disabled={false}
+                        loading={isLoading}
+                        disabled={isLoading}
                         variant="outlined"
                     >
                         Send Reset Token

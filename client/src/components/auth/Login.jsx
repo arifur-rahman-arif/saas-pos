@@ -7,6 +7,9 @@ import LoadingButton from "@mui/lab/LoadingButton";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
 import Link from "@mui/material/Link";
+import { GoogleLogin } from "react-google-login";
+// import { useGoogleLogin } from "react- google-login";
+import FacebookLogin from "react-facebook-login";
 
 import { useLoginMutation } from "../../services/auth";
 import { useDispatch } from "react-redux";
@@ -26,6 +29,10 @@ const Login = () => {
 
     // All ajax req here
     const [loginCaller, { isError, isLoading, isSuccess, error }] = useLoginMutation();
+
+    // const { signIn, loaded } = useGoogleLogin({
+
+    // });
 
     useEffect(() => {
         if (isError) {
@@ -79,6 +86,14 @@ const Login = () => {
         }
 
         loginCaller(reqBody);
+    };
+
+    // useEffect(() => {
+    //     console.log(signIn, loaded);
+    // }, [signIn, loaded]);
+
+    const responseGoogle = (response) => {
+        console.log(response);
     };
 
     return (
@@ -152,9 +167,30 @@ const Login = () => {
                         loading={isLoading}
                         disabled={isLoading}
                         variant="outlined"
+                        className="login_btn"
                     >
                         Login
                     </LoadingButton>
+
+                    <div className="social_login">
+                        <GoogleLogin
+                            className="google_login"
+                            clientId="573219645067-ko4u5hbl362i8l0cu6ghmbbbgt5df9gf.apps.googleusercontent.com"
+                            buttonText="Google"
+                            onSuccess={responseGoogle}
+                            onFailure={responseGoogle}
+                            cookiePolicy={"single_host_origin"}
+                        />
+
+                        <FacebookLogin
+                            cssClass="facebook_login"
+                            appId="1088597931155576"
+                            autoLoad={true}
+                            icon="fab fa-facebook-square"
+                            textButton="Facebook"
+                            fields="name,email,picture"
+                        />
+                    </div>
                 </form>
             </div>
         </>

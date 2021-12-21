@@ -76,7 +76,7 @@ const Register = () => {
                         label="Confirm Password"
                         variant="outlined"
                     />
-                    <button>Sign up</button>
+                    <button className="sign_up_btn">Sign up</button>
                 </Box>
             </div>
         </>

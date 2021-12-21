@@ -1,12 +1,24 @@
 * {
     margin: 0;
     padding: 0;
-    font-family: "Poppins", sans-serif !important;
+    font-family: "Poppins", sans-serif;
+
+    input,
+    label,
+    span,
+    p,
+    div,
+    strong,
+    b,
+    a {
+        font-family: "Poppins", sans-serif !important;
+    }
 }
 
 body {
     background-color: #fff;
 }
+
 @import "./variable.scss";
 
 @import "./components/auth/auth.scss";

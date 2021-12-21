@@ -54,7 +54,8 @@
         margin: 10px auto;
     }
 
-    button {
+    .sign_up_btn,
+    .login_btn {
         width: 60%;
         height: 40px;
         margin: 10px auto;
@@ -69,16 +70,14 @@
         background: $primaryColor_2;
         cursor: pointer;
 
-        * {
-            color: #fff !important;
-        }
-
         span {
             width: 22px !important;
             height: 22px !important;
         }
     }
-    button:hover {
+
+    .sign_up_btn:hover,
+    .login_btn:hover {
         background: #6d44b8;
     }
     .login {
@@ -96,5 +95,69 @@
     }
     #chk:checked ~ .signup .label {
         transform: scale(0.6);
+    }
+
+    .social_login {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        width: 100%;
+        align-items: center;
+        margin-top: 20px;
+        gap: 20px;
+
+        button {
+            width: unset !important;
+        }
+    }
+
+    .google_login {
+        cursor: pointer !important;
+
+        & > div {
+            transform: translateY(3px) !important;
+            padding: 10px 10px 10px 15px !important;
+        }
+        span {
+            font-weight: bolder !important;
+            font-size: 1.2rem !important;
+        }
+
+        svg {
+            transform: scale(1.2);
+        }
+    }
+
+    .facebook_login {
+        display: block;
+        border: 0px;
+        border-radius: 3px;
+        box-shadow: rgba(0, 0, 0, 0.5) 0px 1px 2px;
+        color: rgb(255, 255, 255);
+        cursor: pointer;
+        font-size: 19px;
+        margin: 5px;
+        width: calc(100% - 10px);
+        overflow: hidden;
+        padding: 0px 10px;
+        user-select: none;
+        height: 50px;
+        background: rgb(59, 89, 152);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        i {
+            font-size: 1.8rem;
+            margin-right: 10px;
+        }
+
+        &:hover {
+            background: rgb(41, 62, 105);
+        }
+    }
+
+    .facebook_login_container {
+        position: relative;
     }
 }

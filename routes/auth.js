@@ -19,6 +19,7 @@ router.post(`/${route}/register`, authMiddleware.isUserExists, registerControlle
 router.post(`/${route}/verify-session`, authMiddleware.verifySession, sessionController.session);
 router.post(`/${route}/verify-token`, authMiddleware.verifyToken, tokenController.token);
 router.post(`/${route}/forgot-password`, forgotPasswordController.sendToken);
+router.post(`/${route}/google-login`, loginController.googleLogin);
 
 // router.post(`/${route}/logout`, authMiddleware.hasCapabitlities, logoutUserController.logout);
 // router.post(`/${route}/logout-user`, authMiddleware.hasCapabitlities, logoutUserController.logout);

@@ -7,8 +7,7 @@ const authMiddleware = {
         const { userName, email } = req.body;
 
         const user = await User.find({
-            userName,
-            email,
+            $or: [{ userName }, { email }],
         });
 
         if (user.length) return next(new ErrorResponse("Username or email already exits", 400));

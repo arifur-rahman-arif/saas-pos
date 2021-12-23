@@ -8,10 +8,9 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
 import Link from "@mui/material/Link";
 import { GoogleLogin } from "react-google-login";
-// import { useGoogleLogin } from "react- google-login";
 import FacebookLogin from "react-facebook-login";
 
-import { useLoginMutation } from "../../services/auth";
+import { useGoogleLoginMutation, useLoginMutation } from "../../services/auth";
 import { useDispatch } from "react-redux";
 import { handleAlert } from "../../features/alert/alertSlice";
 import { validateEmail } from "../../global";
@@ -28,23 +27,34 @@ const Login = () => {
     const dispatch = useDispatch();
 
     // All ajax req here
-    const [loginCaller, { isError, isLoading, isSuccess, error }] = useLoginMutation();
+    const [loginCaller, loginArgs] = useLoginMutation();
+    const [googleLoginCaller, googleLoginArgs] = useGoogleLoginMutation();
 
-    // const { signIn, loaded } = useGoogleLogin({
-
-    // });
-
+    // Normal Login hook for any api response from backend
     useEffect(() => {
-        if (isError) {
+        if (loginArgs.isError) {
             dispatch(
                 handleAlert({
                     showAlert: true,
                     alertType: "error",
-                    alertMessage: error.data.message,
+                    alertMessage: loginArgs.error.data.message,
                 })
             );
         }
-    }, [isError, error, dispatch]);
+    }, [loginArgs, dispatch]);
+
+    // Google login hook for any api response from backend
+    useEffect(() => {
+        if (googleLoginArgs.isError) {
+            dispatch(
+                handleAlert({
+                    showAlert: true,
+                    alertType: "error",
+                    alertMessage: googleLoginArgs.error.data.message,
+                })
+            );
+        }
+    }, [googleLoginArgs, dispatch]);
 
     const loginSubmit = (e) => {
         e.preventDefault();
@@ -88,17 +98,41 @@ const Login = () => {
         loginCaller(reqBody);
     };
 
-    // useEffect(() => {
-    //     console.log(signIn, loaded);
-    // }, [signIn, loaded]);
-
     const responseGoogle = (response) => {
         console.log(response);
+
+        let tokenId = response?.tokenId;
+
+        if (tokenId) {
+            googleLoginCaller({
+                tokenId,
+            });
+        } else {
+            dispatch(
+                handleAlert({
+                    showAlert: true,
+                    alertType: "error",
+                    alertMessage: "Invalid authentication detected",
+                })
+            );
+        }
+    };
+
+    const googleErrorResponse = (error) => {
+        dispatch(
+            handleAlert({
+                showAlert: true,
+                alertType: "error",
+                alertMessage: error.details,
+            })
+        );
+        console.error(error);
     };
 
     return (
         <>
-            {isSuccess && <Navigate to="/dashboard" />}
+            {loginArgs.isSuccess && <Navigate to="/dashboard" />}
+            {googleLoginArgs.isSuccess && <Navigate to="/dashboard" />}
 
             <div className="login">
                 <label className="label" htmlFor="chk" aria-hidden="true">
@@ -164,8 +198,8 @@ const Login = () => {
 
                     <LoadingButton
                         type="submit"
-                        loading={isLoading}
-                        disabled={isLoading}
+                        loading={loginArgs.isLoading}
+                        disabled={loginArgs.isLoading}
                         variant="outlined"
                         className="login_btn"
                     >
@@ -178,7 +212,7 @@ const Login = () => {
                             clientId="573219645067-ko4u5hbl362i8l0cu6ghmbbbgt5df9gf.apps.googleusercontent.com"
                             buttonText="Google"
                             onSuccess={responseGoogle}
-                            onFailure={responseGoogle}
+                            onFailure={googleErrorResponse}
                             cookiePolicy={"single_host_origin"}
                         />
 

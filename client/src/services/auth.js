@@ -23,9 +23,18 @@ export const authApi = createApi({
                 };
             },
         }),
+        googleLogin: builder.mutation({
+            query: (body) => {
+                return {
+                    url: `google-login`,
+                    method: "POST",
+                    body,
+                };
+            },
+        }),
     }),
 });
 
 // Export hooks for usage in functional components, which are
 // auto-generated based on the defined endpoints
-export const { useLoginMutation, useForgotPasswordMutation } = authApi;
+export const { useLoginMutation, useForgotPasswordMutation, useGoogleLoginMutation } = authApi;

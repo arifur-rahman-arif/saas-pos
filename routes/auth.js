@@ -5,7 +5,6 @@ const registerController = require("../controllers/register");
 const authMiddleware = require("../middleware/auth");
 const verifyUserController = require("../controllers/verifyUser");
 const loginController = require("../controllers/login");
-const logoutUserController = require("../controllers/logoutUser");
 const forgotPasswordController = require("../controllers/forgotPassword");
 const sessionController = require("../controllers/session");
 const tokenController = require("../controllers/token");
@@ -20,6 +19,7 @@ router.post(`/${route}/verify-session`, authMiddleware.verifySession, sessionCon
 router.post(`/${route}/verify-token`, authMiddleware.verifyToken, tokenController.token);
 router.post(`/${route}/forgot-password`, forgotPasswordController.sendToken);
 router.post(`/${route}/google-login`, loginController.googleLogin);
+router.post(`/${route}/facebook-login`, loginController.facebookLogin);
 
 // router.post(`/${route}/logout`, authMiddleware.hasCapabitlities, logoutUserController.logout);
 // router.post(`/${route}/logout-user`, authMiddleware.hasCapabitlities, logoutUserController.logout);

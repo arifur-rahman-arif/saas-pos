@@ -10,7 +10,11 @@ import Link from "@mui/material/Link";
 import { GoogleLogin } from "react-google-login";
 import FacebookLogin from "react-facebook-login";
 
-import { useGoogleLoginMutation, useLoginMutation } from "../../services/auth";
+import {
+    useFacebookLoginMutation,
+    useGoogleLoginMutation,
+    useLoginMutation,
+} from "../../services/auth";
 import { useDispatch } from "react-redux";
 import { handleAlert } from "../../features/alert/alertSlice";
 import { validateEmail } from "../../global";
@@ -29,6 +33,7 @@ const Login = () => {
     // All ajax req here
     const [loginCaller, loginArgs] = useLoginMutation();
     const [googleLoginCaller, googleLoginArgs] = useGoogleLoginMutation();
+    const [facebookLoginCaller, facebookLoginArgs] = useFacebookLoginMutation();
 
     // Normal Login hook for any api response from backend
     useEffect(() => {
@@ -55,6 +60,19 @@ const Login = () => {
             );
         }
     }, [googleLoginArgs, dispatch]);
+
+    // Facebook login hook for any api response from backend
+    useEffect(() => {
+        if (facebookLoginArgs.isError) {
+            dispatch(
+                handleAlert({
+                    showAlert: true,
+                    alertType: "error",
+                    alertMessage: facebookLoginArgs.error.data.message,
+                })
+            );
+        }
+    }, [facebookLoginArgs, dispatch]);
 
     const loginSubmit = (e) => {
         e.preventDefault();
@@ -99,8 +117,6 @@ const Login = () => {
     };
 
     const responseGoogle = (response) => {
-        console.log(response);
-
         let tokenId = response?.tokenId;
 
         if (tokenId) {
@@ -129,10 +145,49 @@ const Login = () => {
         console.error(error);
     };
 
+    const facebookResponse = (response) => {
+        const { accessToken, email, userID, name, picture } = response;
+
+        if (
+            !accessToken ||
+            typeof accessToken !== "string" ||
+            !email ||
+            typeof email !== "string" ||
+            !userID ||
+            typeof userID !== "string" ||
+            !name ||
+            typeof name !== "string" ||
+            !picture ||
+            typeof picture !== "object"
+        ) {
+            dispatch(
+                handleAlert({
+                    showAlert: true,
+                    alertType: "error",
+                    alertMessage: "Missing 1 or more required fields",
+                })
+            );
+            return;
+        }
+
+        facebookLoginCaller(response);
+    };
+
+    const facebookErrorResponse = (error) => {
+        dispatch(
+            handleAlert({
+                showAlert: true,
+                alertType: "error",
+                alertMessage: "Google login process exited",
+            })
+        );
+    };
+
     return (
         <>
             {loginArgs.isSuccess && <Navigate to="/dashboard" />}
             {googleLoginArgs.isSuccess && <Navigate to="/dashboard" />}
+            {facebookLoginArgs.isSuccess && <Navigate to="/dashboard" />}
 
             <div className="login">
                 <label className="label" htmlFor="chk" aria-hidden="true">
@@ -209,7 +264,7 @@ const Login = () => {
                     <div className="social_login">
                         <GoogleLogin
                             className="google_login"
-                            clientId="573219645067-ko4u5hbl362i8l0cu6ghmbbbgt5df9gf.apps.googleusercontent.com"
+                            clientId="573219645067-al3gofbi4esbs3vusmhbc4mohl3s0sh4.apps.googleusercontent.com"
                             buttonText="Google"
                             onSuccess={responseGoogle}
                             onFailure={googleErrorResponse}
@@ -218,11 +273,13 @@ const Login = () => {
 
                         <FacebookLogin
                             cssClass="facebook_login"
-                            appId="1088597931155576"
-                            autoLoad={true}
+                            appId="447916660214139"
+                            autoLoad={false}
                             icon="fab fa-facebook-square"
                             textButton="Facebook"
                             fields="name,email,picture"
+                            callback={facebookResponse}
+                            onFailure={facebookErrorResponse}
                         />
                     </div>
                 </form>

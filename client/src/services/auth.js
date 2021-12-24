@@ -32,9 +32,23 @@ export const authApi = createApi({
                 };
             },
         }),
+        facebookLogin: builder.mutation({
+            query: (body) => {
+                return {
+                    url: `facebook-login`,
+                    method: "POST",
+                    body,
+                };
+            },
+        }),
     }),
 });
 
 // Export hooks for usage in functional components, which are
 // auto-generated based on the defined endpoints
-export const { useLoginMutation, useForgotPasswordMutation, useGoogleLoginMutation } = authApi;
+export const {
+    useLoginMutation,
+    useForgotPasswordMutation,
+    useGoogleLoginMutation,
+    useFacebookLoginMutation,
+} = authApi;

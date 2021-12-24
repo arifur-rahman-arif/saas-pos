@@ -30,26 +30,24 @@ const loginController = {
                 return next(new ErrorResponse("Username or email is required", 404));
             }
 
-            const userDoc = await User.findOne(data).select(["password", "status"]);
+            this.userDoc = await User.findOne(data).select(["password", "status"]);
 
-            if (!userDoc) return next(new ErrorResponse("User don't exists", 404));
+            if (!this.userDoc) return next(new ErrorResponse("User don't exists", 404));
 
-            let isPasswordMatch = await userDoc.matchPassword(password);
+            let isPasswordMatch = await this.userDoc.matchPassword(password);
 
             if (!isPasswordMatch) return next(new ErrorResponse("Invalid credentials", 401));
 
-            if (!userDoc.status.active || !userDoc.status.isVerified) {
+            if (!this.userDoc.status.active || !this.userDoc.status.isVerified) {
                 return next(new ErrorResponse("User account is not verifed or in-active", 401));
             }
 
-            const expirationTime = 60 * 60 * 24 * 10 * 1000;
-
-            if (userDoc?._id) {
+            if (this.userDoc?._id) {
                 if (keepMeLoggedIn) {
-                    req.session.cookie.maxAge = expirationTime;
+                    return loginController.sendResponse(req, res, "User logged in successfully");
                 }
 
-                req.session.userID = userDoc._id;
+                req.session.userID = this.userDoc._id;
 
                 return res.status(200).json({
                     code: 200,
@@ -91,11 +89,10 @@ const loginController = {
 
             if (!family_name) return next(new ErrorResponse("Last name is required", 400));
 
-            const password = sub + process.env.GOOGLE_USER_SECRET;
+            const password = sub + email;
 
             const userExists = await loginController.isUserExists({
                 email,
-                userName: email,
             });
 
             if (userExists) {
@@ -117,7 +114,6 @@ const loginController = {
                 firstName: given_name,
                 lastName: family_name,
                 email: email,
-                googleLogin: true,
                 password: password,
                 avatarRef: picture,
                 status: {
@@ -132,7 +128,88 @@ const loginController = {
 
             loginController.sendResponse(req, res, "User account created successfully");
 
-            let message = `You have logged in to Saas POS successfully`;
+            let message = `User account created successfully`;
+
+            sendMail({
+                toEmail: email,
+                subject: "Account creation successfull",
+                message,
+            });
+        } catch (error) {
+            next(error);
+        }
+    },
+
+    facebookLogin: async (req, res, next) => {
+        try {
+            const { accessToken, email, userID, name, picture } = req.body;
+
+            if (!accessToken || typeof accessToken !== "string") {
+                return next(new ErrorResponse("Invalid token", 400));
+            }
+
+            if (
+                !email ||
+                typeof email !== "string" ||
+                !userID ||
+                typeof userID !== "string" ||
+                !name ||
+                typeof name !== "string" ||
+                !picture ||
+                typeof picture !== "object"
+            ) {
+                return next(new ErrorResponse("Missing required field", 400));
+            }
+
+            // Get the first name and last name from the name variable
+            const [firstName, lastName] = name.split(" ");
+
+            if (!firstName) {
+                firstName = email;
+            }
+
+            const avatarRef = picture?.data?.url;
+
+            const password = userID + email;
+
+            const userExists = await loginController.isUserExists({
+                email,
+            });
+
+            if (userExists) {
+                const passwordMatched = await this.userDoc.matchPassword(password);
+
+                if (!this.userDoc.status.active || !this.userDoc.status.isVerified) {
+                    return next(new ErrorResponse("User account is not verifed or in-active", 403));
+                }
+
+                if (passwordMatched) {
+                    return loginController.sendResponse(req, res, "User logged in successfully");
+                } else {
+                    return next(new ErrorResponse("Invalid credentials", 400));
+                }
+            }
+
+            const userModal = User({
+                userName: email,
+                firstName,
+                lastName,
+                email: email,
+                password: password,
+                avatarRef,
+                status: {
+                    active: true,
+                    onHold: false,
+                    restricted: false,
+                    isVerified: true,
+                },
+            });
+
+            this.userDoc = await userModal.save();
+
+            loginController.sendResponse(req, res, "User account created successfully");
+
+            let message = `User account created successfully`;
 
             sendMail({
                 toEmail: email,

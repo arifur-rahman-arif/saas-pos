@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import LoadingButton from "@mui/lab/LoadingButton";
 import TextField from "@mui/material/TextField";
+import ReCAPTCHA from "react-google-recaptcha";
 
 import Alert from "../../features/alert/Alert";
 import { useDispatch } from "react-redux";
@@ -16,6 +17,7 @@ const ForgotPassword = () => {
 
     const [userEmail, setUserEmail] = useState("");
     const [emailInputError, setEmailInputError] = useState(false);
+    const [captchaOk, setCaptchaOk] = useState(false);
 
     useEffect(() => {
         if (isError) {
@@ -65,7 +67,24 @@ const ForgotPassword = () => {
             email: userEmail,
         };
 
+        if (!captchaOk) {
+            dispatch(
+                handleAlert({
+                    showAlert: true,
+                    alertType: "warning",
+                    alertMessage: "Please validate the captcha field",
+                })
+            );
+            return;
+        }
+
         forgotPasswordCaller(reqBody);
+    };
+
+    const captchaOnChange = (val) => {
+        if (val && val != null) {
+            setCaptchaOk(true);
+        }
     };
 
     return (
@@ -90,6 +109,12 @@ const ForgotPassword = () => {
                             setUserEmail(e.target.value);
                             setEmailInputError(false);
                         }}
+                    />
+
+                    <ReCAPTCHA
+                        className="captcha_field"
+                        sitekey="6LdM68wdAAAAADwXStmlRy5puuZNu1Twe0ozsxe4"
+                        onChange={captchaOnChange}
                     />
 
                     <LoadingButton

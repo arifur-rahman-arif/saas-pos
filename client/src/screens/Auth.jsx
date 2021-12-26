@@ -7,7 +7,7 @@ const Auth = () => {
         <>
             <div className="auth_container">
                 <div className="main">
-                    <input type="checkbox" id="chk" aria-hidden="true" />
+                    <input type="checkbox" defaultChecked={true} id="chk" aria-hidden="true" />
                     <Register />
                     <Login />
                 </div>

@@ -9,6 +9,7 @@ import Checkbox from "@mui/material/Checkbox";
 import Link from "@mui/material/Link";
 import { GoogleLogin } from "react-google-login";
 import FacebookLogin from "react-facebook-login";
+import ReCAPTCHA from "react-google-recaptcha";
 
 import {
     useFacebookLoginMutation,
@@ -24,6 +25,7 @@ const Login = () => {
     const [userLogin, setUserLogin] = useState("");
     const [userPassword, setUserPassword] = useState("");
     const [keepMeLoggedIn, setKeepMeLoggedIn] = useState(true);
+    const [captchaOk, setCaptchaOk] = useState(false);
 
     const [showLoginError, setShowLoginError] = useState(false);
     const [showLoginPasswordError, setShowLoginPasswordError] = useState(false);
@@ -113,6 +115,17 @@ const Login = () => {
             reqBody.userName = userLogin;
         }
 
+        if (!captchaOk) {
+            dispatch(
+                handleAlert({
+                    showAlert: true,
+                    alertType: "warning",
+                    alertMessage: "Please validate the captcha field",
+                })
+            );
+            return;
+        }
+
         loginCaller(reqBody);
     };
 
@@ -178,9 +191,15 @@ const Login = () => {
             handleAlert({
                 showAlert: true,
                 alertType: "error",
-                alertMessage: "Google login process exited",
+                alertMessage: "Facebook login process exited",
             })
         );
+    };
+
+    const captchaOnChange = (val) => {
+        if (val && val != null) {
+            setCaptchaOk(true);
+        }
     };
 
     return (
@@ -250,6 +269,11 @@ const Login = () => {
                             Forgot password
                         </Link>
                     </div>
+
+                    <ReCAPTCHA
+                        sitekey="6LdM68wdAAAAADwXStmlRy5puuZNu1Twe0ozsxe4"
+                        onChange={captchaOnChange}
+                    />
 
                     <LoadingButton
                         type="submit"

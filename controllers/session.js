@@ -1,7 +1,9 @@
 const sessionController = {
     session: (req, res, next) => {
         try {
-            return res.status(201).json({
+            res.cookie("userID", req.userID);
+
+            return res.status(200).json({
                 code: 200,
                 status: "success",
                 message: "Session verified successfully",

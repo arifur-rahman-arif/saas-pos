@@ -57,6 +57,8 @@ const authMiddleware = {
                 return next(new ErrorResponse("User is not verified", 401));
             }
 
+            req.userID = userID;
+
             next();
         } catch (err) {
             next(err);

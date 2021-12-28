@@ -43,8 +43,8 @@ const registerController = {
             });
 
             if (mail) {
-                return res.status(202).json({
-                    code: 202,
+                return res.status(201).json({
+                    code: 201,
                     status: "success",
                     token,
                     message: "User created successfully",

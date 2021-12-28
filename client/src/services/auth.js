@@ -41,6 +41,14 @@ export const authApi = createApi({
                 };
             },
         }),
+        verifySession: builder.mutation({
+            query: () => {
+                return {
+                    url: `verify-session`,
+                    method: "POST",
+                };
+            },
+        }),
     }),
 });
 
@@ -51,4 +59,5 @@ export const {
     useForgotPasswordMutation,
     useGoogleLoginMutation,
     useFacebookLoginMutation,
+    useVerifySessionMutation,
 } = authApi;

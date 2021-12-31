@@ -8,12 +8,10 @@
     background: #000;
     opacity: 0.5;
 
-    $dim: 4rem;
-
     .spinner {
-        height: $dim;
-        width: $dim;
-        margin: -($dim/2) 0 0 - ($dim/2);
+        height: $dimension;
+        width: $dimension;
+        margin: -($dimension/2) 0 0 - ($dimension/2);
         -webkit-animation: rotation 1s infinite linear;
         -moz-animation: rotation 1s infinite linear;
         -o-animation: rotation 1s infinite linear;

@@ -1,7 +1,7 @@
 const userRoles = {
-    admin: {
-        slug: "admin",
-        name: "Administrator",
+    superAdmin: {
+        slug: "superAdmin",
+        name: "Super Administrator",
     },
     shopAdmin: {
         slug: "shopAdmin",

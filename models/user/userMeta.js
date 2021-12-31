@@ -1,11 +1,13 @@
 const mongoose = require("mongoose");
+const Schema = mongoose.Schema;
 
-const userMetaSchema = mongoose.Schema(
+const userMetaSchema = Schema(
     {
         userID: {
-            type: mongoose.ObjectId,
+            type: Schema.Types.ObjectId,
             required: true,
             unique: true,
+            ref: "User",
         },
     },
     {

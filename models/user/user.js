@@ -3,8 +3,9 @@ const crypto = require("crypto");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const userRoles = require("../../utils/userRoles");
+const Schema = mongoose.Schema;
 
-const userSchema = mongoose.Schema(
+const userSchema = Schema(
     {
         userName: {
             type: String,
@@ -73,6 +74,8 @@ const userSchema = mongoose.Schema(
                 isVerified: false,
             },
         },
+        userMeta: [{ type: Schema.Types.ObjectId, ref: "UserMeta" }],
+        userShops: [{ type: Schema.Types.ObjectId, ref: "UserShop" }],
     },
     {
         timestamps: true,

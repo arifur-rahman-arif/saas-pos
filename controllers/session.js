@@ -1,7 +1,11 @@
 const sessionController = {
     session: (req, res, next) => {
         try {
-            res.cookie("userID", req.userID);
+            res.cookie("userID", req.userID, {
+                // httpOnly: true,
+                sameSite: true,
+                secure: true,
+            });
 
             return res.status(200).json({
                 code: 200,

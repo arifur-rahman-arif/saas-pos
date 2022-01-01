@@ -9,9 +9,9 @@
     opacity: 0.5;
 
     .spinner {
-        height: $dimension;
-        width: $dimension;
-        margin: -($dimension/2) 0 0 - ($dimension/2);
+        height: 4rem;
+        width: 4rem;
+        margin: -2rem 0 0 -2rem;
         -webkit-animation: rotation 1s infinite linear;
         -moz-animation: rotation 1s infinite linear;
         -o-animation: rotation 1s infinite linear;

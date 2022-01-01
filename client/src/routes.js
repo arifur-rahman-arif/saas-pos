@@ -3,7 +3,7 @@ import RequireAuth from "./components/RequireAuth";
 import Auth from "./screens/Auth";
 import Dashboard from "./screens/Dashboard";
 import ForgotPassword from "./screens/forgot-password/ForgotPassword";
-import NotFound from "./screens/NotFound";
+import Page404 from "./screens/Page404";
 import ResetPassword from "./screens/reset-password/ResetPassword";
 
 const Routes = () => {
@@ -34,7 +34,7 @@ const Routes = () => {
             path: "/reset-password/:token",
             element: <ResetPassword />,
         },
-        { path: "*", element: <NotFound /> },
+        { path: "*", element: <Page404 /> },
     ]);
 };
 

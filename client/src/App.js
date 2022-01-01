@@ -1,33 +1,24 @@
 import React from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router } from "react-router-dom";
 
 import "./App.scss";
-import RequireAuth from "./routes/RequireAuth";
-import Auth from "./screens/Auth";
-import Dashboard from "./screens/Dashboard";
-import ForgotPassword from "./screens/forgot-password/ForgotPassword";
-import NotFound from "./screens/NotFound";
-import ResetPassword from "./screens/reset-password/ResetPassword";
+import { BaseOptionChartStyle } from "./components/charts/BaseOptionChart";
+import ScrollToTop from "./components/ScrollToTop";
+import Routes from "./routes";
+import ThemeConfig from "./theme";
+import GlobalStyles from "./theme/globalStyles";
 
 const App = () => {
     return (
         <>
-            <Router>
-                <Routes>
-                    <Route path="/" element={<Auth />} />
-                    <Route
-                        path="/dashboard"
-                        element={
-                            <RequireAuth>
-                                <Dashboard />
-                            </RequireAuth>
-                        }
-                    />
-                    <Route path="/forgot-password" element={<ForgotPassword />} />
-                    <Route path="/reset-password/:token" element={<ResetPassword />} />
-                    <Route path="*" element={<NotFound />} />
-                </Routes>
-            </Router>
+            <ThemeConfig>
+                <Router>
+                    <ScrollToTop />
+                    <GlobalStyles />
+                    <BaseOptionChartStyle />
+                    <Routes />
+                </Router>
+            </ThemeConfig>
         </>
     );
 };

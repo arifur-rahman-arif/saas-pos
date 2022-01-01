@@ -1,7 +1,8 @@
 import { replace } from "lodash";
 import numeral from "numeral";
+import { format, formatDistanceToNow } from "date-fns";
 
-const validateEmail = (email) => {
+export const validateEmail = (email) => {
     return String(email)
         .toLowerCase()
         .match(
@@ -9,26 +10,44 @@ const validateEmail = (email) => {
         );
 };
 
-const fCurrency = (number) => {
+export const fCurrency = (number) => {
     return numeral(number).format(Number.isInteger(number) ? "$0,0" : "$0,0.00");
 };
 
-const fPercent = (number) => {
+export const fPercent = (number) => {
     return numeral(number / 100).format("0.0%");
 };
 
-const fNumber = (number) => {
+export const fNumber = (number) => {
     return numeral(number).format();
 };
 
-const fShortenNumber = (number) => {
+export const fShortenNumber = (number) => {
     return replace(numeral(number).format("0.00a"), ".00", "");
 };
 
-const fData = (number) => {
+export const fData = (number) => {
     return numeral(number).format("0.0 b");
 };
 
-export { validateEmail, fCurrency, fPercent, fNumber, fShortenNumber, fData };
+export const fDate = (date) => {
+    return format(new Date(date), "dd MMMM yyyy");
+};
+
+export const fDateTime = (date) => {
+    return format(new Date(date), "dd MMM yyyy HH:mm");
+};
+
+export const fDateTimeSuffix = (date) => {
+    return format(new Date(date), "dd/MM/yyyy hh:mm p");
+};
+
+export const fToNow = (date) => {
+    return formatDistanceToNow(new Date(date), {
+        addSuffix: true,
+    });
+};
+
+// export { validateEmail, fCurrency, fPercent, fNumber, fShortenNumber, fData };
 
 // ----------------------------------------------------------------------

@@ -2,18 +2,24 @@ const User = require("../models/user/user");
 const ErrorResponse = require("../utils/ErrorResponse");
 const { OAuth2Client } = require("google-auth-library");
 const sendMail = require("../utils/emails/sendMail");
+const errorCodes = require("../middleware/errorCodes");
 
-const loginController = {
-    login: async (req, res, next) => {
+class Login {
+    async login(req, res, next) {
+        // Assign the parameter
+        this.req = req;
+        this.res = res;
+        this.next = next;
+
         try {
-            const { userName, email, password, keepMeLoggedIn } = req.body;
+            const { userName, email, password, keepMeLoggedIn } = this.req.body;
 
             if (!password) {
-                return next(new ErrorResponse("Password is required", 404));
+                return this.next(new ErrorResponse("Password is required", 400));
             }
 
             if (!userName && !email) {
-                return next(new ErrorResponse("Username or email is required", 404));
+                return this.next(new ErrorResponse("Username or email is required", 400));
             }
 
             let data;
@@ -27,47 +33,52 @@ const loginController = {
                     email,
                 };
             } else {
-                return next(new ErrorResponse("Username or email is required", 404));
+                return this.next(new ErrorResponse("Username or email is required", 400));
             }
 
             this.userDoc = await User.findOne(data).select(["password", "status"]);
 
-            if (!this.userDoc) return next(new ErrorResponse("User don't exists", 404));
+            if (!this.userDoc) return this.next(new ErrorResponse("User don't exists", 404));
 
             let isPasswordMatch = await this.userDoc.matchPassword(password);
 
-            if (!isPasswordMatch) return next(new ErrorResponse("Invalid credentials", 401));
+            if (!isPasswordMatch) return this.next(new ErrorResponse("Invalid credentials", 401));
 
             if (!this.userDoc.status.active || !this.userDoc.status.isVerified) {
-                return next(new ErrorResponse("User account is not verifed or in-active", 401));
+                return this.next(new ErrorResponse("User account is not verifed or in-active", 403));
             }
 
             if (this.userDoc?._id) {
                 if (keepMeLoggedIn) {
-                    return loginController.sendResponse(req, res, "User logged in successfully");
+                    return this.sendResponse("User logged in successfully");
                 }
 
-                req.session.userID = this.userDoc._id;
+                this.req.session.userID = this.userDoc._id;
 
-                return res.status(200).json({
-                    code: 200,
+                return this.res.status(200).json({
+                    code: errorCodes[200],
                     status: "success",
                     message: "User logged in successfully",
                 });
             }
 
-            return next(new ErrorResponse("One or more field is empty", 404));
+            return this.next(new ErrorResponse("One or more field is empty", 404));
         } catch (error) {
-            next(error);
+            this.next(error);
         }
-    },
+    }
 
-    googleLogin: async (req, res, next) => {
+    async googleLogin(req, res, next) {
+        // Assign the parameter
+        this.req = req;
+        this.res = res;
+        this.next = next;
+
         try {
-            const { tokenId } = req.body;
+            const { tokenId } = this.req.body;
 
             if (!tokenId || typeof tokenId !== "string") {
-                return next(new ErrorResponse("Invalid token", 400));
+                return this.next(new ErrorResponse("Invalid token", 400));
             }
 
             const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
@@ -81,17 +92,17 @@ const loginController = {
 
             const { email_verified, sub, given_name, family_name, picture, email } = payload;
 
-            if (!email_verified) return next(new ErrorResponse("Email is not verified", 401));
+            if (!email_verified) return this.next(new ErrorResponse("Email is not verified", 401));
 
-            if (!sub) return next(new ErrorResponse("User is not found", 404));
+            if (!sub) return this.next(new ErrorResponse("User is not found", 404));
 
-            if (!given_name) return next(new ErrorResponse("First name is required", 400));
+            if (!given_name) return this.next(new ErrorResponse("First name is required", 400));
 
-            if (!family_name) return next(new ErrorResponse("Last name is required", 400));
+            if (!family_name) return this.next(new ErrorResponse("Last name is required", 400));
 
             const password = sub + email;
 
-            const userExists = await loginController.isUserExists({
+            const userExists = await this.isUserExists({
                 email,
             });
 
@@ -99,13 +110,13 @@ const loginController = {
                 const passwordMatched = await this.userDoc.matchPassword(password);
 
                 if (!this.userDoc.status.active || !this.userDoc.status.isVerified) {
-                    return next(new ErrorResponse("User account is not verifed or in-active", 403));
+                    return this.next(new ErrorResponse("User account is not verifed or in-active", 403));
                 }
 
                 if (passwordMatched) {
-                    return loginController.sendResponse(req, res, "User logged in successfully");
+                    return this.sendResponse("User logged in successfully");
                 } else {
-                    return next(new ErrorResponse("Invalid credentials", 400));
+                    return this.next(new ErrorResponse("Invalid credentials", 400));
                 }
             }
 
@@ -126,7 +137,7 @@ const loginController = {
 
             this.userDoc = await userModal.save();
 
-            loginController.sendResponse(req, res, "User account created successfully");
+            this.sendResponse("User account created successfully");
 
             let message = `User account created successfully`;
 
@@ -136,16 +147,21 @@ const loginController = {
                 message,
             });
         } catch (error) {
-            next(error);
+            this.next(error);
         }
-    },
+    }
 
-    facebookLogin: async (req, res, next) => {
+    async facebookLogin(req, res, next) {
+        // Assign the parameter
+        this.req = req;
+        this.res = res;
+        this.next = next;
+
         try {
-            const { accessToken, email, userID, name, picture } = req.body;
+            const { accessToken, email, userID, name, picture } = this.req.body;
 
             if (!accessToken || typeof accessToken !== "string") {
-                return next(new ErrorResponse("Invalid token", 400));
+                return this.next(new ErrorResponse("Invalid token", 400));
             }
 
             if (
@@ -158,7 +174,7 @@ const loginController = {
                 !picture ||
                 typeof picture !== "object"
             ) {
-                return next(new ErrorResponse("Missing required field", 400));
+                return this.next(new ErrorResponse("Missing required field", 400));
             }
 
             // Get the first name and last name from the name variable
@@ -172,7 +188,7 @@ const loginController = {
 
             const password = userID + email;
 
-            const userExists = await loginController.isUserExists({
+            const userExists = await this.isUserExists({
                 email,
             });
 
@@ -180,13 +196,13 @@ const loginController = {
                 const passwordMatched = await this.userDoc.matchPassword(password);
 
                 if (!this.userDoc.status.active || !this.userDoc.status.isVerified) {
-                    return next(new ErrorResponse("User account is not verifed or in-active", 403));
+                    return this.next(new ErrorResponse("User account is not verifed or in-active", 403));
                 }
 
                 if (passwordMatched) {
-                    return loginController.sendResponse(req, res, "User logged in successfully");
+                    return this.sendResponse("User logged in successfully");
                 } else {
-                    return next(new ErrorResponse("Invalid credentials", 400));
+                    return this.next(new ErrorResponse("Invalid credentials", 400));
                 }
             }
 
@@ -207,7 +223,7 @@ const loginController = {
 
             this.userDoc = await userModal.save();
 
-            loginController.sendResponse(req, res, "User account created successfully");
+            this.sendResponse("User account created successfully");
 
             let message = `User account created successfully`;
 
@@ -217,27 +233,27 @@ const loginController = {
                 message,
             });
         } catch (error) {
-            next(error);
+            this.next(error);
         }
-    },
+    }
 
-    sendResponse: (req, res, message) => {
+    sendResponse(message) {
         const expirationTime = 60 * 60 * 24 * 10 * 1000;
 
         if (this.userDoc?._id) {
-            req.session.cookie.maxAge = expirationTime;
+            this.req.session.cookie.maxAge = expirationTime;
 
-            req.session.userID = this.userDoc._id;
+            this.req.session.userID = this.userDoc._id;
 
-            return res.status(200).json({
-                code: 200,
+            return this.res.status(200).json({
+                code: errorCodes[200],
                 status: "success",
                 message,
             });
         }
-    },
+    }
 
-    isUserExists: async (loginArgs) => {
+    async isUserExists(loginArgs) {
         const user = await User.findOne(loginArgs).select(["password", "status"]);
 
         if (user) {
@@ -246,7 +262,9 @@ const loginController = {
         }
 
         return false;
-    },
-};
+    }
+}
+
+const loginController = new Login();
 
 module.exports = loginController;

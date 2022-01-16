@@ -1,5 +1,5 @@
-const sessionController = {
-    session: (req, res, next) => {
+class Session {
+    session(req, res, next) {
         try {
             res.cookie("userID", req.userID, {
                 // httpOnly: true,
@@ -15,7 +15,9 @@ const sessionController = {
         } catch (error) {
             next(error);
         }
-    },
-};
+    }
+}
+
+const sessionController = new Session();
 
 module.exports = sessionController;

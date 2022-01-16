@@ -2,8 +2,8 @@ const User = require("../models/user/user");
 const ErrorResponse = require("../utils/ErrorResponse");
 const jwt = require("jsonwebtoken");
 
-const authMiddleware = {
-    isUserExists: async (req, res, next) => {
+class AuthMiddleware {
+    async isUserExists(req, res, next) {
         const { userName, email } = req.body;
 
         const user = await User.find({
@@ -13,9 +13,9 @@ const authMiddleware = {
         if (user.length) return next(new ErrorResponse("Username or email already exits", 400));
 
         next();
-    },
+    }
 
-    hasCapabitlities: async (req, res, next) => {
+    async hasCapabitlities(req, res, next) {
         const { userName, email } = req.body;
 
         if (!userName || !email) {
@@ -36,9 +36,9 @@ const authMiddleware = {
         }
 
         next();
-    },
+    }
 
-    verifySession: async (req, res, next) => {
+    async verifySession(req, res, next) {
         try {
             let userID = "";
 
@@ -63,9 +63,9 @@ const authMiddleware = {
         } catch (err) {
             next(err);
         }
-    },
+    }
 
-    verifyToken: (req, res, next) => {
+    verifyToken(req, res, next) {
         let authToken = "";
 
         if (!req.headers.authorization || !req.headers.authorization.startsWith("Bearer")) {
@@ -98,7 +98,9 @@ const authMiddleware = {
         } catch (err) {
             next(err);
         }
-    },
-};
+    }
+}
+
+const authMiddleware = new AuthMiddleware();
 
 module.exports = authMiddleware;

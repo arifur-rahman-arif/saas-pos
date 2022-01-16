@@ -1,13 +1,15 @@
 const ErrorResponse = require("../utils/ErrorResponse");
+const errorCodes = require("./errorCodes");
 
 const error = {
     routeError: (req, res, next) => {
         res.status(404).send({
-            code: 404,
+            code: errorCodes["404"],
             status: "error",
             message: `Api route not found for ${req.headers.host + req.url}`,
         });
     },
+
     errorHandler: (err, req, res, next) => {
         let error = { ...err };
 
@@ -24,7 +26,7 @@ const error = {
         }
 
         res.status(error.statusCode || 500).json({
-            code: error.statusCode,
+            code: errorCodes[error.statusCode],
             status: "error",
             message: error.message || "Server Error",
         });

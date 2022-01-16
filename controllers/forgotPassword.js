@@ -1,10 +1,9 @@
 const ErrorResponse = require("../utils/ErrorResponse");
 const User = require("../models/user/user");
 const sendMail = require("../utils/emails/sendMail");
-const jwt = require("jsonwebtoken");
 
-const forgotPasswordController = {
-    sendToken: async (req, res, next) => {
+class ForgotPassword {
+    async sendToken(req, res, next) {
         try {
             const { email } = req.body;
 
@@ -53,7 +52,9 @@ const forgotPasswordController = {
         } catch (error) {
             next(error);
         }
-    },
-};
+    }
+}
+
+const forgotPasswordController = new ForgotPassword();
 
 module.exports = forgotPasswordController;

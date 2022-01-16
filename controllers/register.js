@@ -2,34 +2,37 @@ const ErrorResponse = require("../utils/ErrorResponse");
 const User = require("../models/user/user");
 const sendMail = require("../utils/emails/sendMail");
 
-const registerController = {
-    user: null,
+class Register {
+    async register(req, res, next) {
+        // Assign the parameter
+        this.req = req;
+        this.res = res;
+        this.next = next;
 
-    register: async (req, res, next) => {
         try {
-            registerController.user = User(req.body);
+            this.user = User(this.req.body);
 
-            registerController.user.save(function (err, result) {
+            this.user.save(function (err, result) {
                 if (err) {
-                    return next(new ErrorResponse(err, 400));
+                    return this.next(new ErrorResponse(err, 400));
                 } else {
-                    registerController.sendResponse(req, res, next);
+                    this.sendResponse(req, res, next);
                 }
             });
         } catch (error) {
-            next(error);
+            this.next(error);
         }
-    },
+    }
 
-    sendResponse: async (req, res, next) => {
-        const { email } = req.body;
+    async sendResponse() {
+        const { email } = this.req.body;
 
-        if (!registerController.user) return next(new ErrorResponse("User don't exists", 404));
+        if (!this.user) return this.next(new ErrorResponse("User don't exists", 404));
 
         try {
-            const token = registerController.user.getSignedJwtToken("1d");
+            const token = this.user.getSignedJwtToken("1d");
 
-            let url = `${req.protocol}://${req.get("host")}${req.originalUrl}/${token}`;
+            let url = `${this.req.protocol}://${this.req.get("host")}${this.req.originalUrl}/${token}`;
 
             let message = `
                 Click <a href="${url}">here</a> to verify your account or open this url to your browser
@@ -43,19 +46,21 @@ const registerController = {
             });
 
             if (mail) {
-                return res.status(201).json({
+                return this.res.status(201).json({
                     code: 201,
                     status: "success",
                     token,
                     message: "User created successfully",
                 });
             } else {
-                return next(new ErrorResponse("Mail could not be sent", 400));
+                return this.next(new ErrorResponse("Mail could not be sent", 400));
             }
         } catch (error) {
-            next(error);
+            this.next(error);
         }
-    },
-};
+    }
+}
+
+const registerController = new Register();
 
 module.exports = registerController;

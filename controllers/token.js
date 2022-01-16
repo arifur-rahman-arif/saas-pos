@@ -1,5 +1,5 @@
-const tokenController = {
-    token: (req, res, next) => {
+class Token {
+    token(req, res, next) {
         try {
             return res.status(201).json({
                 code: 200,
@@ -9,7 +9,9 @@ const tokenController = {
         } catch (error) {
             next(error);
         }
-    },
-};
+    }
+}
+
+const tokenController = new Token();
 
 module.exports = tokenController;

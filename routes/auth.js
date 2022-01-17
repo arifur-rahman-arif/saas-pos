@@ -31,11 +31,12 @@ router.post(`/${route}/forgot-password`, forgotPasswordController.sendToken.bind
 // router.post(`/${route}/logout`, authMiddleware.hasCapabitlities, logoutUserController.logout);
 // router.post(`/${route}/logout-user`, authMiddleware.hasCapabitlities, logoutUserController.logout);
 
-// router.patch(`/${route}/reset-password`, async (req, res) => {
-//     res.status(200).send({
-//         status: 200,
-//         message: `Response from /api/${route}`,
-//     });
-// });
+router.post(`/${route}/reset-password`, async (req, res) => {
+    console.log(req.body);
+    res.status(200).send({
+        status: 200,
+        message: `Response from /api/${route} <h1>hello</h1>`,
+    });
+});
 
 module.exports = router;

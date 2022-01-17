@@ -11,10 +11,15 @@ const session = require("express-session");
 const MongoStore = require("connect-mongo");
 
 const error = require("./middleware/error");
+const sanitizeApp = require("./utils/sanitizer");
 
-require("./config/dbConnection");
+/* 
+Start the application
+*/
 
 ("use strict");
+
+require("./config/dbConnection");
 
 let processArgs = process.argv.slice(2);
 
@@ -25,6 +30,10 @@ app.set("env", environment);
 
 // Use all the middlewares here
 app.use(express.json());
+
+// Middleware for sanitization & escaping
+app.use(sanitizeApp.middleware());
+
 app.use(cors());
 app.use(cookieParser(process.env.COOKIE_SECRET));
 app.use(

@@ -4,8 +4,8 @@ const { OAuth2Client } = require("google-auth-library");
 const sendMail = require("../utils/emails/sendMail");
 const errorCodes = require("../middleware/errorCodes");
 
-class Login {
-    async login(req, res, next) {
+const loginController = {
+    login: async (req, res, next) => {
         // Assign the parameter
         this.req = req;
         this.res = res;
@@ -50,7 +50,7 @@ class Login {
 
             if (this.userDoc?._id) {
                 if (keepMeLoggedIn) {
-                    return this.sendResponse("User logged in successfully");
+                    return loginController.sendResponse("User logged in successfully");
                 }
 
                 this.req.session.userID = this.userDoc._id;
@@ -66,9 +66,9 @@ class Login {
         } catch (error) {
             this.next(error);
         }
-    }
+    },
 
-    async googleLogin(req, res, next) {
+    googleLogin: async (req, res, next) => {
         // Assign the parameter
         this.req = req;
         this.res = res;
@@ -102,7 +102,7 @@ class Login {
 
             const password = sub + email;
 
-            const userExists = await this.isUserExists({
+            const userExists = await loginController.isUserExists({
                 email,
             });
 
@@ -114,7 +114,7 @@ class Login {
                 }
 
                 if (passwordMatched) {
-                    return this.sendResponse("User logged in successfully");
+                    return loginController.sendResponse("User logged in successfully");
                 } else {
                     return this.next(new ErrorResponse("Invalid credentials", 400));
                 }
@@ -137,7 +137,7 @@ class Login {
 
             this.userDoc = await userModal.save();
 
-            this.sendResponse("User account created successfully");
+            loginController.sendResponse("User account created successfully");
 
             let message = `User account created successfully`;
 
@@ -149,9 +149,9 @@ class Login {
         } catch (error) {
             this.next(error);
         }
-    }
+    },
 
-    async facebookLogin(req, res, next) {
+    facebookLogin: async (req, res, next) => {
         // Assign the parameter
         this.req = req;
         this.res = res;
@@ -188,7 +188,7 @@ class Login {
 
             const password = userID + email;
 
-            const userExists = await this.isUserExists({
+            const userExists = await loginController.isUserExists({
                 email,
             });
 
@@ -200,7 +200,7 @@ class Login {
                 }
 
                 if (passwordMatched) {
-                    return this.sendResponse("User logged in successfully");
+                    return loginController.sendResponse("User logged in successfully");
                 } else {
                     return this.next(new ErrorResponse("Invalid credentials", 400));
                 }
@@ -223,7 +223,7 @@ class Login {
 
             this.userDoc = await userModal.save();
 
-            this.sendResponse("User account created successfully");
+            loginController.sendResponse("User account created successfully");
 
             let message = `User account created successfully`;
 
@@ -235,9 +235,9 @@ class Login {
         } catch (error) {
             this.next(error);
         }
-    }
+    },
 
-    sendResponse(message) {
+    sendResponse: (message) => {
         const expirationTime = 60 * 60 * 24 * 10 * 1000;
 
         if (this.userDoc?._id) {
@@ -251,9 +251,9 @@ class Login {
                 message,
             });
         }
-    }
+    },
 
-    async isUserExists(loginArgs) {
+    isUserExists: async (loginArgs) => {
         const user = await User.findOne(loginArgs).select(["password", "status"]);
 
         if (user) {
@@ -262,9 +262,7 @@ class Login {
         }
 
         return false;
-    }
-}
-
-const loginController = new Login();
+    },
+};
 
 module.exports = loginController;

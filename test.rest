@@ -16,7 +16,7 @@ content-type: application/json
 
 {
 	"email": "kosotene@ryteto.me",
-	"password": "123456a"
+	"password": "123456"
 }
 ###
 

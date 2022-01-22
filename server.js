@@ -9,7 +9,6 @@ const path = require("path");
 const cookieParser = require("cookie-parser");
 const session = require("express-session");
 const MongoStore = require("connect-mongo");
-
 const error = require("./middleware/error");
 const sanitizeApp = require("./utils/sanitizer");
 
@@ -70,7 +69,7 @@ app.use(error.errorHandler);
 // Run the app on the server port
 const server = app.listen(PORT, () => {
     if (environment === "development") {
-        console.log(`Server running at http://localhost:${PORT}/api/`);
+        console.log(`Server PID: ${process.pid} running at http://localhost:${PORT}/api/`);
     } else {
         console.log(`Server running at ${PORT}`);
     }

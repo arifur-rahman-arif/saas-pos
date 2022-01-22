@@ -2,8 +2,8 @@ const ErrorResponse = require("../utils/ErrorResponse");
 const User = require("../models/user/user");
 const sendMail = require("../utils/emails/sendMail");
 
-class Register {
-    async register(req, res, next) {
+const registerController = {
+    register: async (req, res, next) => {
         // Assign the parameter
         this.req = req;
         this.res = res;
@@ -22,9 +22,9 @@ class Register {
         } catch (error) {
             this.next(error);
         }
-    }
+    },
 
-    async sendResponse() {
+    sendResponse: async () => {
         const { email } = this.req.body;
 
         if (!this.user) return this.next(new ErrorResponse("User don't exists", 404));
@@ -58,9 +58,7 @@ class Register {
         } catch (error) {
             this.next(error);
         }
-    }
-}
-
-const registerController = new Register();
+    },
+};
 
 module.exports = registerController;

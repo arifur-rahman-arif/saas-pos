@@ -26,12 +26,16 @@ const RequireAuth = ({ children }) => {
             setAuthenticated(true);
             setRequestComplete(true);
         }
+
+        if (sessionArgs.isError) {
+            setRequestComplete(true);
+        }
     }, [sessionArgs]);
 
     // If the ajax request is complete and user is authenticated than process with next component
     if (requestComplete) {
         if (!authenticated) {
-            return <Navigate to="/" state={{ from: location }} />;
+            return <Navigate to="/login" state={{ from: location }} />;
         }
         return children;
     }

@@ -2,8 +2,8 @@ const ErrorResponse = require("../utils/ErrorResponse");
 const User = require("../models/user/user");
 const sendMail = require("../utils/emails/sendMail");
 
-class ForgotPassword {
-    async sendToken(req, res, next) {
+const forgotPasswordController = {
+    sendToken: async (req, res, next) => {
         try {
             const { email } = req.body;
 
@@ -52,9 +52,7 @@ class ForgotPassword {
         } catch (error) {
             next(error);
         }
-    }
-}
-
-const forgotPasswordController = new ForgotPassword();
+    },
+};
 
 module.exports = forgotPasswordController;
